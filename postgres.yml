@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: "postgres:12-alpine"
+    container_name: "maqbool-postgres"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: maqbool@123
+      POSTGRES_DB: maqbool_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - "./postgres_data:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+    restart: always
+    networks:
+      pg_net:
+        ipv4_address: 172.143.1.100
+
+networks:
+  pg_net:
+    name : maqbool_network
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.143.1.0/24
+          gateway: 172.143.1.1
